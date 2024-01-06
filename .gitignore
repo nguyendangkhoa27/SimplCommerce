@@ -1,0 +1,11 @@
+*.config
+*.v2
+*.vsidx
+*.lock
+*.suo
+.vs
+.vscode
+bin
+obj
+*.log
+*.bak

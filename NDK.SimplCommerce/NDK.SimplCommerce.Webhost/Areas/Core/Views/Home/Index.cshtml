@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>trạng thái: </h1>
+    @if(User.Identity.IsAuthenticated){
+        <h1 style="color: green;">đã đăng nhập</h1>
+        <a href="/logout">logout</a>
+    }else{
+        <h1 style="color: red;">chưa đăng nhập</h1>
+        <a href="/login">login</a>
+        <a href="/register">register</a>
+
+    }
+    
+    
+
+</body>
+</html>

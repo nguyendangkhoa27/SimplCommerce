@@ -1,0 +1,8 @@
+[
+    {
+        "id": "NDK.SimplCommerce.Core",
+        "name": "Core",
+        "isBundledWithHost": true,
+        "version": "1.0.0.0"
+    }
+]
