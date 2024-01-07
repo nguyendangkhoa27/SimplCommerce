@@ -5,8 +5,14 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.Loader;
 using System.Threading.Tasks;
+using IdentityServer4.AccessTokenValidation;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Identity;
+using NDK.SimplCommerce.Core.Data;
+using NDK.SimplCommerce.Core.Models;
 using NDK.SimplCommerce.Infrastructure;
 using NDK.SimplCommerce.Infrastructure.Modules;
+using NDK.SimplCommerce.Webhost.Configurations;
 
 namespace NDK.SimplCommerce.Webhost.Extensions;
 
@@ -31,6 +37,36 @@ public static class IServiceCollectionExtensions
         return services;
     }
 
+    public static IServiceCollection AddCustomizedIdentity(this IServiceCollection services){
+        services.AddIdentity<User,Role>(options => {
+            options.Password.RequireDigit = false;
+            options.Password.RequiredLength = 0;
+            options.Password.RequiredUniqueChars = 0;
+            options.Password.RequireLowercase = false;
+            options.Password.RequireNonAlphanumeric = false;
+            options.Password.RequireUppercase =false;
+        })
+        .AddEntityFrameworkStores<SimplDbContext>()
+        .AddDefaultTokenProviders();
+        return services;
+    }
+    public static IServiceCollection AddCustomizedIdentityServer(this IServiceCollection services, ConfigurationManager config){
+        services.AddIdentityServer()
+        .AddDeveloperSigningCredential()
+        .AddInMemoryPersistedGrants()
+        .AddInMemoryIdentityResources(IdentityServerConfig.GetIdentityResources())
+        .AddInMemoryApiResources(IdentityServerConfig.GetApiResources())
+        .AddInMemoryApiScopes(IdentityServerConfig.GetApiScopes())
+        .AddInMemoryClients(IdentityServerConfig.GetClients())
+        .AddAspNetIdentity<User>();
+        services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+        .AddCookie()
+        .AddIdentityServerAuthentication(options =>{
+            options.Authority = config["Identity:Authority"];
+        });
+        
+        return services;
+    }
     private static void TryLoadAssemblyModule(string moduleFileFolder, ModuleInfo module)
     {
         var binary = "bin";
